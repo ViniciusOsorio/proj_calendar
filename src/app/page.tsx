@@ -1,95 +1,52 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+import React, {useState, useEffect} from "react";
+import { OuterLayer, CalendarDiv, DisplayDiv, WeekDiv, WeekDayDiv, Day } from "./styled";
+import moment from "moment";
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+export default function Home(){
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    const [today, setToday] = useState(moment(new Date))
+    const [yesterday, setYesterday] = useState(moment().subtract(1, 'days'))
+    
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+    moment.locale(`pt-br`)
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+    // const mountWeek = (weekNum) => {
+        
+    // }
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    const showYesterday = () => {
+        let yd = moment(today).subtract(1, 'days');
+        setYesterday(yd)
+        console.log(yesterday)
+    }
+
+
+    const mountMonth = () => {
+        
+        return (
+            <WeekDiv>
+                <WeekDayDiv id={'Week1'}><Day onClick={() => {console.log(today.format('ddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+                <WeekDayDiv id={'Week2'}><Day onClick={() => {console.log(today.format('dddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+                <WeekDayDiv id={'Week3'}><Day onClick={() => {console.log(today.format('dddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+                <WeekDayDiv id={'Week4'}><Day onClick={() => {console.log(today.format('dddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+                <WeekDayDiv id={'Week5'}><Day onClick={() => {console.log(today.format('dddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+                <WeekDayDiv id={'Week6'}><Day onClick={() => {console.log(today.format('dddd'))}}>{today.format('DD')}</Day></WeekDayDiv>
+            </WeekDiv>
+        )
+    }
+
+
+
+    return(
+        <OuterLayer>
+            <CalendarDiv>
+                <DisplayDiv>Day Week Month Year</DisplayDiv>
+                {mountMonth()}
+                {/* <h1>{today.format('dddd')}</h1> */}
+                <Day onClick={() => {showYesterday}}>{yesterday.format('DD')}</Day>
+            </CalendarDiv>
+        </OuterLayer>
+    )
 }
