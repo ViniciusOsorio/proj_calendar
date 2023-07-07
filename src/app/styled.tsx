@@ -25,14 +25,15 @@ export const CalendarDiv = styled.div`
 export const DisplayDiv = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
     justify-content: flex-end;
+    flex-wrap: wrap;
 `
 
 export const WeekDiv = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
+    align-items: center;
     margin-top: 15px;
     flex-direction: column;
 `
@@ -49,7 +50,8 @@ export const Day = styled.div`
     height: 80px;
     font-size: 32px;
     &:hover{
-        cursor: pointer
+        cursor: pointer;
+        background-color: #c5c7c5;
     }
     margin: 10px;
 `
