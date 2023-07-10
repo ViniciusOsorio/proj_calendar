@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+type props = {};
+
 export const OuterLayer = styled.div`
     width: 100%;
     height: 100vh;
@@ -29,13 +31,13 @@ export const DisplayDiv = styled.div`
     flex-wrap: wrap;
 `
 
-export const WeekDiv = styled.div`
+export const WeeksDiv = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
     margin-top: 15px;
-    flex-direction: column;
+    flex-direction: row;
 `
 
 export const Day = styled.div`
@@ -44,11 +46,11 @@ export const Day = styled.div`
     align-items: center;
     border-radius: 180px;
     background-color: white;
-    color: black;
-    border: 1px solid black;
+    color: ${props => props.isSelMonth ? 'black' : 'grey'};
+    border: ${props => props.isCurrDay ? '3px solid black' : props.isSelMonth ? '1px solid black' : '1px solid grey'};
     width: 80px;
     height: 80px;
-    font-size: 32px;
+    font-size: ${props => props.isCurrDay ? '38px' : '32px'};
     &:hover{
         cursor: pointer;
         background-color: #c5c7c5;
@@ -58,5 +60,22 @@ export const Day = styled.div`
 
 export const WeekDayDiv = styled.div`
     display: flex;
+    flex-direction: column;
+`
+
+export const WeekDayText = styled.h1`
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${props => props.day == 'sun' ? 'red' : ''};
+`
+
+export const SelectedMonthDiv = styled.div`
+    display: flex;
     flex-direction: row;
+    font-size: 32px;
+    display: flex;
+    justify-content: center;
+    
 `

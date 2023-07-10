@@ -1,93 +1,186 @@
 'use client'
 
 import React, {useState, useEffect} from "react";
-import { OuterLayer, CalendarDiv, DisplayDiv, WeekDiv, WeekDayDiv, Day } from "./styled";
-import moment from "moment";
 
-Date = require('datejs')
+import { OuterLayer, 
+         CalendarDiv, 
+         DisplayDiv, 
+         WeeksDiv, 
+         WeekDayDiv,
+         WeekDayText, 
+         Day, 
+         SelectedMonthDiv} from "./styled";
+
+import { getWeek,
+         setWeek, 
+         getMonth,
+         setMonth,
+         getDaysInMonth, 
+         getDate, 
+         getYear, 
+         getDay,
+         format, 
+         setDay} from "date-fns";
+
+import { ptBR } from "date-fns/locale";
 
 export default function Home(){
 
-    const [today, setToday] = useState(moment(new Date))
-    const [yesterday, setYesterday] = useState(moment().subtract(1, 'days'))
-    const [selectedMonth, setSelectedMonth] = useState(moment().month())
-    
+    const [selectedDay, setSelectedDay] = useState(getDate(new Date))
+    const [currDay, setCurrDay] = useState(getDate(new Date))
+    const [selectedMonth, setSelectedMonth] = useState(getMonth(new Date))
+    const [currMonth, setCurrMonth] = useState(getMonth(new Date))
+    const [selectedYear, setSelectedYear] = useState(getYear(new Date))
+    const [currYear, setCurrYear] = useState(getYear(new Date))
+    const [datesData, setDatesData] = useState([])
 
-    moment.locale(`pt-br`)
+    useEffect(() => {
 
-    const mountWeek = (weekday) => {
-        let mountDate;
-        let week = [];
-        for(let i = 1; i <= moment({month: selectedMonth}).daysInMonth(); i++){
-            mountDate = moment({day: i, month: selectedMonth})
-            if (mountDate.format('ddd') == weekday){
-                week.push(<Day value={mountDate}>{mountDate.format('DD')}</Day>)
-            }
-        }
-        return week
+    }, [])
+
+    const setDates = () => {
+
     }
-
 
     const mountMonth = () => {
 
         let testDate;
         let weekNum = [];
+        let weeks = [];
 
-        for(let i = 1; i <= moment({month: selectedMonth}).daysInMonth(); i++){
-            testDate = moment({day: i, month: selectedMonth});
+        for(let i = 1; i <= getDaysInMonth(selectedMonth); i++){
+            testDate = new Date(selectedYear, selectedMonth, i)
             if (i == 1){
-                weekNum.push(testDate.week())
+                weekNum.push(getWeek(testDate))
             } else {
                 for(let ind = 0; ind <= weekNum.length; ind++){
-                    if(testDate.week() > weekNum[ind] && weekNum[ind+1] == null){
-                        weekNum.push(testDate.week())
-                        console.log(weekNum)
+                    if(getWeek(testDate) > weekNum[ind] && weekNum[ind+1] == null){
+                        weekNum.push(getWeek(testDate))
+                        console.log(weekNum) 
                     }
                 }
             }
         }
         
         return (
-            <WeekDiv>
-                <WeekDayDiv id={'Sun'}>
-                    {mountWeek('Sun')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Mon'}>
-                    {mountWeek('Mon')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Tue'}>
-                    {mountWeek('Tue')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Wed'}>
-                    {mountWeek('Wed')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Thu'}>
-                    {mountWeek('Thu')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Fri'}>
-                    {mountWeek('Fri')}
-                </WeekDayDiv>
-
-                <WeekDayDiv id={'Sat'}>
-                    {mountWeek('Sat')}
-                </WeekDayDiv>
-            </WeekDiv>
+            <WeeksDiv>
+                {mountWeeks(weekNum)}
+            </WeeksDiv>
         )
     }
+    
+    const mountWeeks = (weekNum) => {
+        let mountDate;
+        let sun = [];
+        let mon = [];
+        let tue = [];
+        let wed = [];
+        let thu = [];
+        let fri = [];
+        let sat = [];
+        let day;
+        // console.log()
+        for(let i = 0; i < weekNum.length; i++){
+            for (let d = 0; d <= 6; d++){
+                mountDate = setDay(setWeek(new Date, weekNum[i]), d);
+                console.log(mountDate);
+                day = <Day 
+                    isCurrDay={getDate(mountDate) == currDay}
+                    isSelMonth={getMonth(mountDate) == selectedMonth}
+                    value={mountDate}
+                    // onClick={() => console.log(format(mountDate, "dd/MM/yy"))}
+                    onClick={showComp}
+                >
+                    {format(mountDate, 'dd')}
+                </Day>
 
+                switch(getDay(mountDate)){
+                    case 0:
+                        sun.push(day)
+                        break;
+                    case 1:
+                        mon.push(day)
+                        break;
+                    case 2:
+                        tue.push(day)
+                        break;
+                    case 3:
+                        wed.push(day)
+                        break;
+                    case 4:
+                        thu.push(day)
+                        break;
+                    case 5:
+                        fri.push(day)
+                        break;                
+                    case 6:
+                        sat.push(day)
+                    break;
+                }                
+            }
+        }
+        return( 
+            <WeeksDiv>
+                <WeekDayDiv>
+                    <WeekDayText day={'sun'}>
+                        {format(setDay(new Date, 0), 'eee')}
+                    </WeekDayText>
+                    {sun}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 1), 'eee')}
+                    </WeekDayText>
+                    {mon}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 2), 'eee')}
+                    </WeekDayText>
+                    {tue}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 3), 'eee')}
+                    </WeekDayText>
+                    {wed}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 4), 'eee')}
+                    </WeekDayText>
+                    {thu}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 5), 'eee')}
+                    </WeekDayText>
+                    {fri}
+                </WeekDayDiv>
+                <WeekDayDiv>
+                    <WeekDayText>
+                        {format(setDay(new Date, 6), 'eee')}
+                    </WeekDayText>
+                    {sat}
+                </WeekDayDiv>
+            </WeeksDiv>)
+    }
 
+    const showComp = (e) => {
+        console.log(e)
+        
+    }
+    
 
     return(
         <OuterLayer>
             <CalendarDiv>
-                <DisplayDiv>Day Week Month Year</DisplayDiv>                
+                <DisplayDiv>Day Week Month Year</DisplayDiv>
+                <SelectedMonthDiv>
+                    {format(setMonth(new Date, selectedMonth), 'MMMM')}
+                </SelectedMonthDiv>
                 {mountMonth()}
-                {/* <h1>{today.format('dddd')}</h1> */}
+                {/* <h1>{currDay.format('dddd')}</h1> */}
                 {/* <Day onClick={() => {mountWeek()}}>{yesterday.format('DD')}</Day> */}
             </CalendarDiv>
         </OuterLayer>
