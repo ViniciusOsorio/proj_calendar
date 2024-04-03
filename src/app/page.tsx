@@ -9,7 +9,11 @@ import { OuterLayer,
          WeekDayDiv,
          WeekDayText, 
          Day, 
-         SelectedMonthDiv} from "./styled";
+         SelectedMonthDiv,
+         YearDiv,
+         SelYear,
+         ChangeButton,
+         DayDiv } from "./styled";
 
 import { getWeek,
          setWeek, 
@@ -20,7 +24,10 @@ import { getWeek,
          getYear, 
          getDay,
          format, 
-         setDay} from "date-fns";
+         setDay, 
+         setYear} from "date-fns";
+
+// import {} from 'react'
 
 import { ptBR } from "date-fns/locale";
 
@@ -56,7 +63,7 @@ export default function Home(){
                 for(let ind = 0; ind <= weekNum.length; ind++){
                     if(getWeek(testDate) > weekNum[ind] && weekNum[ind+1] == null){
                         weekNum.push(getWeek(testDate))
-                        console.log(weekNum) 
+                        console.log(weekNum)
                     }
                 }
             }
@@ -78,21 +85,36 @@ export default function Home(){
         let thu = [];
         let fri = [];
         let sat = [];
+        let week = [];
+        let weeks = [];
         let day;
         // console.log()
         for(let i = 0; i < weekNum.length; i++){
             for (let d = 0; d <= 6; d++){
-                mountDate = setDay(setWeek(new Date, weekNum[i]), d);
-                console.log(mountDate);
-                day = <Day 
-                    isCurrDay={getDate(mountDate) == currDay}
-                    isSelMonth={getMonth(mountDate) == selectedMonth}
-                    value={mountDate}
-                    // onClick={() => console.log(format(mountDate, "dd/MM/yy"))}
-                    onClick={showComp}
-                >
-                    {format(mountDate, 'dd')}
-                </Day>
+                console.log(weekNum[i])
+                if (d == 0) week = []; //limpar array no começo de cada semana
+                if(selectedYear != currYear){
+                    mountDate = setYear(setDay(setWeek(new Date, weekNum[i]), d), selectedYear);
+                } else {
+                    mountDate = setDay(setWeek(new Date, weekNum[i]), d);
+                }
+                // console.log(mountDate);
+                day = 
+                // <DayDiv>
+                    <Day
+                        isCurrDay={getDate(mountDate) == currDay && getMonth(mountDate) == currMonth && getYear(mountDate) == currYear}
+                        isSelMonth={getMonth(mountDate) == selectedMonth}
+                        value={mountDate}
+                        onClick={() => console.log(format(mountDate, "dd/MM/yy"))}
+                        // onClick={showComp}
+                    >
+                        {format(mountDate, 'dd')}
+                    </Day>
+                // </DayDiv>
+
+                week.push(day);
+
+                if (d == 6) weeks.push(week) //no último dia da semana, insere a semana já montada
 
                 switch(getDay(mountDate)){
                     case 0:
@@ -116,66 +138,101 @@ export default function Home(){
                     case 6:
                         sat.push(day)
                     break;
-                }                
+                }    
             }
         }
-        return( 
+
+        console.log(weeks)
+
+        return(
+            //Monta colunas das datas
+            // <WeeksDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText day={'sun'}>
+            //             {format(setDay(new Date, 0), 'eee')}
+            //         </WeekDayText>
+            //         {sun}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 1), 'eee')}
+            //         </WeekDayText>
+            //         {mon}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 2), 'eee')}
+            //         </WeekDayText>
+            //         {tue}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 3), 'eee')}
+            //         </WeekDayText>
+            //         {wed}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 4), 'eee')}
+            //         </WeekDayText>
+            //         {thu}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 5), 'eee')}
+            //         </WeekDayText>
+            //         {fri}
+            //     </WeekDayDiv>
+            //     <WeekDayDiv>
+            //         <WeekDayText>
+            //             {format(setDay(new Date, 6), 'eee')}
+            //         </WeekDayText>
+            //         {sat}
+            //     </WeekDayDiv>
+            // </WeeksDiv>
             <WeeksDiv>
-                <WeekDayDiv>
-                    <WeekDayText day={'sun'}>
-                        {format(setDay(new Date, 0), 'eee')}
-                    </WeekDayText>
-                    {sun}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 1), 'eee')}
-                    </WeekDayText>
-                    {mon}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 2), 'eee')}
-                    </WeekDayText>
-                    {tue}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 3), 'eee')}
-                    </WeekDayText>
-                    {wed}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 4), 'eee')}
-                    </WeekDayText>
-                    {thu}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 5), 'eee')}
-                    </WeekDayText>
-                    {fri}
-                </WeekDayDiv>
-                <WeekDayDiv>
-                    <WeekDayText>
-                        {format(setDay(new Date, 6), 'eee')}
-                    </WeekDayText>
-                    {sat}
-                </WeekDayDiv>
-            </WeeksDiv>)
+                {/* {showWeeks(weeks)} */}
+                {weeks}
+            </WeeksDiv>
+        )
+    }
+
+    const showWeeks = (weeks) => {
+        // for (let x = 0; x < weeks.length; x++){for(let y = 0; y < weeks[x].length; y++){}}
+        weeks.forEach((week, i) => {
+            week.forEach((day) => {
+                <DayDiv>{day}</DayDiv>
+            })
+        })
     }
 
     const showComp = (e) => {
         console.log(e)
         
     }
-    
+
+    const changeYear = (type) => {
+        let ctrlYear = selectedYear;
+        if (type == 'prv') {
+            ctrlYear--;
+        } else if(type == 'nxt'){
+            ctrlYear++;
+        }
+        setSelectedYear(ctrlYear);
+    }
+     
 
     return(
-        <OuterLayer>
+        <OuterLayer>            
             <CalendarDiv>
                 <DisplayDiv>Day Week Month Year</DisplayDiv>
+                <YearDiv>
+                    <ChangeButton size={65} onClick={() => changeYear('prv')}>Previous</ChangeButton>
+                        <SelYear>
+                            {selectedYear}
+                        </SelYear>
+                    <ChangeButton size={65} onClick={() => changeYear('nxt')}>Next</ChangeButton>
+                </YearDiv>
                 <SelectedMonthDiv>
                     {format(setMonth(new Date, selectedMonth), 'MMMM')}
                 </SelectedMonthDiv>
